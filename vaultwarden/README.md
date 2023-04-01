@@ -19,6 +19,14 @@
 4. 5-10 $ a month for the server
 5. You will create multiple accounts, for buying your domain, renting your server, and securing your VPS with Cloudflare
 
+## Introduction
+
+Trying to set up a VPS and installing the password management server "Vaultwarden" on it is no easy task. Every app has their own independant documentation, making it hard to understand how they should be connected to each other, and the different components have been on the market for many years, causing many popular forum threads to contain horribly out-of-date information on how to handle Docker, containers, ports and all the other parts of this process.
+
+To finally fill this gap, this guide aims to cover **the entire journey** from buying your VPS until the very last bit of hardening the installation, and to be the only ressource you need to get everything set up and secure.
+
+I've tried my hardest to make this guide as unopinionated and informative as possible. But if you want to read more about each of the topics (and you should!), I've linked the official documentations per section under the headline. That being said, let's get right into the nitty gritty!
+
 ## 1. Getting a Domain
 
 In order to properly use Vaultwarden (or any other services you'd be hosting on your server), you need a domain name. This can be pretty much anything you want that hasn't been used yet. There are countless vendors for domain names, which is why I like to use [TLD-List](https://tld-list.com/) as a starting point. You'll probably want to set the filters to something like
