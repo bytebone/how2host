@@ -15,6 +15,7 @@
 2. Very basic knowledge of networking
 3. 5-15 $ a year for the domain name
 4. 5-10 $ a month for the server
+5. You will create multiple accounts, for buying your domain, renting your server, and securing your VPS with Cloudflare
 
 ## 1. Getting a Domain
 
@@ -80,7 +81,7 @@ To verify that SSH daemon is now listening on the new port, run `lsof -Pni | gre
     sshd    24167    root  4u  IPv6  99527153   0t0  TCP *:4334 (LISTEN)
     sshd    29370    root  4u  IPv4  10998432   0t0  TCP 172.0.0.1:4334->56.223.57.86:51434 (ESTABLISHED)
 
-Where `4334` would be the Port you've specified.
+Where `4334` would be the port you've specified.
 
 To finish this this section, disconnect from the server once more, returning to your local terminal, and run the command `nano .ssh/config`. 
 > This command will not work on Windows, and I don't know which command will. Feel free to make a PR adding this info.
@@ -324,7 +325,7 @@ Now, all that's left is to set up the host in Nginx. It's as easy as before:
 3. Enter `vaultwarden-app` as the hostname, and `80` as the port
 	- You can confirm the port from the docker logs, it might also be `3000`
 4. Enable both `Websockets Support` and `Block Common Exploits`
-5. Chose your CF Certificate in the SSL tab and activate `Force SSL`
+5. Choose your CF Certificate in the SSL tab and activate `Force SSL`
 6. Lastly, under `Custom Locations`, add two entries:
 	1. The first entry enables Websocket support
 		- Location: `/notifications/hub`
@@ -333,7 +334,7 @@ Now, all that's left is to set up the host in Nginx. It's as easy as before:
 		- Click the Cogwheel next to the Hostname and paste the following into the textbox:
 			`proxy_set_header Upgrade $http_upgrade;`
 			`proxy_set_header Connection "upgrade";`
-	2. The second entry is also needed
+	2. The second entry disables webhooks on a subdirectory
 		- Location: `/notifications/hub/negotiate`
 		- Hostname: `vaultwarden-app`
 		- Port: `80` (or whatever port the app is running on in your case)
@@ -346,8 +347,87 @@ Vaultwarden is already very secure. It brings its own rate limiter for login att
 
 Many people would use Fail2Ban for this case, but I've found CrowdSec to be both easier to manage and especially monitor, and more efficient in its banning of offenders. Feel free to figure out Fail2Ban on your own if you so desire - this guide will cover CrowdSec.
 
+### Setting up the Vaultwarden Admin Panel
+
 Before we can do anything meaningful, we need to change an integral setting in the Vaultwarden Admin panel. To do this, open your Vaultwarden Website, then append `/admin` to the URL (e.g. `vault.your.domain/admin`). This should directly lead you to the unsecured admin panel - don't worry, we'll fix that at the end of the guide. For now, navigate into the `Advanced Settings` category and enter `CF-Connecting-IP` into the `Client IP header` field. This enables Vaultwarden to see the real IP addresses of people connecting to your instance, instead of the Cloudflare Proxys' IP. 
 
 > While you're here, you can also change some other settings, like disabling new signups, or anything else you deem useful.
 
-Save your changes with the button at the bottom, and close the tab. Now get back to your terminal, and 
+Save your changes with the button at the bottom, and close the tab. 
+If you wanna control that this has worked, run `docker logs -f vaultwarden-app`, open the Vaultwarden page and log in. You should see your IP in the Docker logs. Should you not have made an account yet, you can also try logging in with fake credentials.
+
+### Installing CrowdSec & Components
+[Official Docs](https://docs.crowdsec.net/docs/getting_started/install_crowdsec)
+
+Now get back to your terminal, and run the following commands, one by one:
+
+	$ curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash
+	$ sudo apt install crowdsec
+	$ sudo apt install crowdsec-firewall-bouncer-iptables
+	$ cscli collections install Dominic-Wagner/vaultwarden
+
+With these commands, you've installed CrowdSec, their firewall bouncer, and the Vaultwarden configuration. Now, we need to set these components up properly to enable them to communicate with each other.
+
+First, run `nano /etc/crowdsec/acquis.yaml` to edit the **CrowdSec Acquisition File**, where we will add the Docker logs of the Vaultwarden container. Add the following text at the end of the file:
+
+	---
+	source: docker
+	container_name:
+		- vaultwarden-app
+	labels:
+		type: Vaultwarden
+	---
+
+If you set a different container name for your Vaultwarden container, change that accordingly here. The label on the other hand is required by the Vaultwarden Collection and has to be exactly like above.
+
+To finish this step, run `systemctl reload crowdsec`. Open your Vaultwarden website once more, and log in with either real or fake credentials. Then, run `cscli metrics` in the terminal and confirm that `docker:vaultwarden-app` is listed as one of the data sources, with some lines read already.
+
+### Configure Firewall Bouncer
+
+Next, we're setting up the firewall bouncer. This again requires running a couple of commands. First, run `ip6tables -N DOCKER-USER` to add an IPv6 chain, then run both `iptables -L` and `ip6tables -L`, each time checking that a `Chain DOCKER-USER` does exist. 
+
+Now, run `nano /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml` to change some things in the bouncer config:
+
+- Change `disable_ipv6:` to `true`
+- Uncomment `- DOCKER-USER` under `iptables_chains`
+- Leave the rest unchanged
+
+Save your edits and quit nano, then run `systemctl reload crowdsec-firewall-bouncer` to apply your changes. You can follow this up with `systemctl status crowdsec-firewall-bouncer` and make sure its both running and healthy. Finally, run `iptables -L DOCKER-USER` and `ip6tables -L DOCKER-USER`, each time checking that a `crowdsec-blacklists` rule has been applied. The name differs slightly between `ip` and `ip6`.
+
+That's it. CrowdSec now runs in the background, monitoring your SSH logs as well as your Vaultwarden login panel, and will automatically ban all IPs that try to bruteforce your logins. You can run `cscli metrics` to check how many logs have been processed, and `cscli alerts list` to see all the bans triggered.
+
+## 8. Securing your Vaultwarden Admin Panel
+
+As the final step, we're gonna secure that Admin Panel that's still openly accessible to the internet. This will happen entirely in the Cloudflare Dashboard, so you can minimize your terminal for now. To start, open https://one.dash.cloudflare.com/ and sign in with your credentials. It will ask you to create a company, which is not as scary as it sounds. Enter anything you want, it won't matter too much. Should it ask for a billing plan, pick the free option.
+
+Once you're in the panel, switch to "Access" on the left, then "Add an application". Select "Self-hosted" as the type, then enter the following details:
+
+- **Application Name:** "Vaultwarden Admin" (or whatever else you want)
+- **Session Duration:** The duration that an authentication should be valid. Pick whatever you feel is safe. I use 60 minutes.
+- **Application Domain:** Put your Vaultwarden domain here. The subdomain (`vault` for `vault.domain.com`) in the first field, the main domain (`domain.com`) in the second field, and `/admin` in the third field.
+- **Enable App in App Launcher:** Off
+
+Then click "Next". On the following screen, enter the following info: 
+
+- **Policy name:** "Mail PIN"
+- Under **Configure Rules** > **Include:** Selector "Emails", and enter your personal mailaddress in the right field. You will receive unlock PINs to this address.
+
+Click "Next" again and change the following on the final screen:
+
+- **Cookie Settings** > **HTTP Only:** On
+
+That's it! You should be brought back to the applications list, where your admin panel now shows up. When you try opening the address from now on, you'll be prompted to enter an email address, which will receive an unlock code. Only the addresses you specified in the rules before will actually be able to receive this code. 
+
+## 9. Setting up Vaultwarden backups
+
+Now that your instance is highly secured, you can safely start storing your passwords in here. But just to be prepared for the worst case, you should also add a backup method of your database, in case anything ever goes wrong on your server in the future. For this, you can find my backup script called `run_backup.sh` in this repository. You can download it to your server by `cd`ing into your desired storage location (I have it next to the docker compose files for ease) and running `curl -OJ githublink`. Then, run `crontab -e` and add the following line at the end:
+
+	0 3 * * * /home/docker/vaultwarden/run_backup.sh >/dev/null 2>&1
+
+You obviously need to adapt the location according to where you saved the script. This will run the backup script everyday at 3am. Per default, the script saves 14 backups, meaning you get backups of the last two weeks, once every day. Feel free to change this as needed.
+
+Technically, you should somehow move these backups completely offsite, to some separate server. You can copy them down to your local machine, rent a storage server on your provider to periodically copy the files to, mount a cloud storage account using rclone and save them to that, or deploy any other solution you want. But this goes beyond the scope of this guide.
+
+## 10. Closing thoughts
+
+That's it! You've successfully bought a server, set up a domain, installed Docker and Vaultwarden, set it all up, locked it down and deployed a basic backup strategy. What a successful day! Now, enjoy setting up all the Bitwarden apps and extensions, knowing that your passwords are about as secure as they'll ever be.
