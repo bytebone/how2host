@@ -1,14 +1,16 @@
 # The entire guide how to install and secure Vaultwarden
 
 ## Chapters
-1. Getting a Domain
-2. Getting & Securing a VPS
-3. Connecting Domain to VPS with Cloudflare
-4. Setting up Docker and Docker Compose
-5. Installing Nginx
-6. Installing and exposing Vaultwarden
-7. Securing Vaultwarden with CrowdSec
-9. Securing Vaultwarden Admin Panel
+1. [Getting a Domain](#1-getting-a-domain)
+2. [Getting](#21-getting-a-vps) & [Securing a VPS](#22-securing-your-vps)
+3. [Connecting Domain to VPS with Cloudflare](#3-connecting-your-domain-and-vps-with-cloudflare)
+4. [Setting up Docker and Docker Compose](#4-setting-up-docker-and-docker-compose)
+5. [Installing Nginx](#5-installing-nginx-proxy-manager)
+6. [Installing and exposing Vaultwarden](#6-installing-vaultwarden)
+7. [Securing Vaultwarden with CrowdSec](#7-securing-vaultwarden-with-crowdsec)
+8. [Securing Vaultwarden Admin Panel](#8-securing-your-vaultwarden-admin-panel)
+9. [Setting up Vaultwarden backups](#9-setting-up-vaultwarden-backups)
+10. [Closing thoughts](#10-closing-thoughts)
 
 ## Prerequisites
 1. Basic knowledge in Terminal and Linux CLI usage
