@@ -45,7 +45,7 @@ Once you found something you like, go through the purchasing process as with any
 
 ## 2.1 Getting a VPS
 
-This is a step with which I can hardly help you. There are countless VPS providers with varying price and quality. Which one you should chose depends on your region of living and your budget. Personally, I've been happy with [Hetzner](https://www.hetzner.com/cloud), who offer hosting in Europe and America. Others that I haven't tried, but who are big and known games in the server space, are [Linode](https://www.linode.com/products/shared/), [Hostinger](https://www.hostinger.com/vps-hosting), [Digital Ocean](https://www.digitalocean.com/solutions/vps-hosting) and [OVHCloud](https://us.ovhcloud.com/vps/), with many more options when spending some time on Google and in comparisons / benchmarks of different providers in your country. 
+This is a step with which I can hardly help you. There are countless VPS providers with varying price and quality. Which one you should choose depends on your region of living and your budget. Personally, I've been happy with [Hetzner](https://www.hetzner.com/cloud), who offer hosting in Europe and America. Others that I haven't tried, but who are big and known games in the server space, are [Linode](https://www.linode.com/products/shared/), [Hostinger](https://www.hostinger.com/vps-hosting), [Digital Ocean](https://www.digitalocean.com/solutions/vps-hosting) and [OVHCloud](https://us.ovhcloud.com/vps/), with many more options when spending some time on Google and in comparisons / benchmarks of different providers in your country. You can also check out [LowEndTalk](https://lowendtalk.com/), which is an online forum for affordable hosting solutions. 
 
 The only thing you should really be looking for is a server that supports an Ubuntu image out of the box. I've yet to see a VPS provider that doesn't, but still look out for it. Regarding specs, a small spec server is more than enough. I've been running my applications on **2 shared cores, 2GB of RAM and 40GB of storage** without problems. You can obviously go higher if you have the cash to do so.
 
@@ -111,7 +111,7 @@ From now on, to connect to the server, all you need to enter is `ssh <server nam
 ## 3. Connecting your Domain and VPS with Cloudflare
 [Official Docs](https://developers.cloudflare.com/learning-paths/get-started/#live_website)
 
-To access your services with your domain name, we need to connect one to the other first. To help us do this **securely**, we'll make use of Cloudflare's Proxy DNS service, which will hide your server IP from anyone accessing your domain, increasing security by obfuscation. To start, go to https://dash.cloudflare.com/sign-up and create an account.
+To access your services with your domain name, we need to connect one to the other first. To help us do this **securely**, we'll make use of Cloudflare's DNS Proxy service, which will hide your server IP from anyone accessing your domain, increasing security by obfuscation. To start, go to https://dash.cloudflare.com/sign-up and create an account.
 
 Once you're in the dashboard, click "Add Site", enter the domain name you've chosen before and select the free plan when prompted. On the next page, you should be confronted with the DNS entries on the domain - of which you probably have none. Should there be any A or AAAA entries, remove them, then add new ones, providing your servers IP address. 
 
@@ -209,7 +209,7 @@ To get started with the Nginx setup, create a new folder at any location you ple
  A short explanation of this script:
  
  - The `services` section defines both the actual Nginx app, as well as the database used to store data.
-   - You need to generate two random strings as passwords, and put them in the appropriate spots. Make sure that the password matches in the two places using `<random string #1>`! 
+   - You need to generate two random strings as passwords, and put them in the appropriate spots. You can do that with `openssl rand -base64 20`. Make sure that the password matches in the two places using `<random string #1>`! 
    - For now, we will expose both port 80 and 81, which are unsecure ports that we will close down in a second.
    - The `container_name` property manually defines the name, since the auto generated names are long and ugly. We will need to enter this into the Nginx interface in a minute!
  - The `networks` section defines the docker network that Nginx will sit in. In the future, any new container you want accessible from the internet needs to be in this network.
@@ -264,7 +264,7 @@ Be careful to read the iptables guide in its' entirety before starting, as you c
 ## 6. Installing Vaultwarden
 [Official Docs](https://github.com/dani-garcia/vaultwarden/wiki)
 
-You're coming along nicely, and are finally ready to actually install Vaultwarden. As you're getting more familiar with Linux navigation, docker and Nginx Hosts, I'll be summarizing more and more from here on out.
+You're coming along nicely, and are finally ready to actually install Vaultwarden. As you're getting more familiar with Linux navigation, Docker and nginx hosts, I'll be summarizing more and more from here on out.
 
 To start, make a new directory for the Vaultwarden config: `mkdir /home/docker/vaultwarden` and open it for editing: `nano /home/docker/vaultwarden/compose.yml`. Paste the following contents:
 
@@ -408,7 +408,7 @@ That's it. CrowdSec now runs in the background, monitoring your SSH logs as well
 
 ## 8. Securing your Vaultwarden Admin Panel
 
-As the final step, we're gonna secure that Admin Panel that's still openly accessible to the internet. This will happen entirely in the Cloudflare Dashboard, so you can minimize your terminal for now. To start, open https://one.dash.cloudflare.com/ and sign in with your credentials. It will ask you to create a company, which is not as scary as it sounds. Enter anything you want, it won't matter too much. Should it ask for a billing plan, pick the free option.
+As the final step, we're gonna secure the Admin Panel that's still openly accessible to the internet. This will happen entirely in the Cloudflare Dashboard, so you can minimize your terminal for now. To start, open https://one.dash.cloudflare.com/ and sign in with your credentials. It will ask you to create a company, which is not as scary as it sounds. Enter anything you want, it won't matter too much. Should it ask for a billing plan, pick the free option.
 
 Once you're in the panel, switch to "Access" on the left, then "Add an application". Select "Self-hosted" as the type, then enter the following details:
 
@@ -430,11 +430,11 @@ That's it! You should be brought back to the applications list, where your admin
 
 ## 9. Setting up Vaultwarden backups
 
-Now that your instance is highly secured, you can safely start storing your passwords in here. But just to be prepared for the worst case, you should also add a backup method of your database, in case anything ever goes wrong on your server in the future. For this, you can find my backup script called `run_backup.sh` in this repository. You can download it to your server by `cd`ing into your desired storage location (I have it next to the docker compose files for ease) and running `curl -OJ githublink`. Then, run `crontab -e` and add the following line at the end:
+Now that your instance is highly secured, you can safely start storing your passwords there. But just to be prepared for the worst case, you should also add a backup method for your database, in case anything ever goes wrong on your server in the future. For this, you can find my backup script called `run_backup.sh` in this repository. You can download it to your server by `cd`ing into your desired storage location (I have it next to the docker compose files for ease) and running `curl -OJ githublink`. Then, run `crontab -e` and add the following line at the end:
 
 	0 3 * * * /home/docker/vaultwarden/run_backup.sh >/dev/null 2>&1
 
-You obviously need to adapt the location according to where you saved the script. This will run the backup script everyday at 3am. Per default, the script saves 14 backups, meaning you get backups of the last two weeks, once every day. Feel free to change this as needed.
+You obviously need to adapt the location according to where you saved the script. This will run the backup script everyday at 3AM. Per default, the script saves 14 backups, meaning you get backups of the last two weeks, once every day. Feel free to change this as needed.
 
 Technically, you should somehow move these backups completely offsite, to some separate server. You can copy them down to your local machine, rent a storage server on your provider to periodically copy the files to, mount a cloud storage account using rclone and save them to that, or deploy any other solution you want. But this goes beyond the scope of this guide.
 
