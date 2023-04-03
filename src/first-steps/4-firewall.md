@@ -1,6 +1,6 @@
 ---
-# author: rainer            # Add as comment, in case we want to display authors down the road
-order: 30                 # Uncomment in case a specific position is desired. Higher number > earlier position
+# author: rainer
+order: 30
 ---
 
 # Setup the Firewall

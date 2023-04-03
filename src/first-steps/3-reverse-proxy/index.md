@@ -27,5 +27,5 @@ This is a content skeleton, and not yet properly written out.
 - guides are usually written with npm in mind, since its easy to use and setup
 
 [!ref](./nginx.md)
-[!ref Traefik **(not yet written)**](https://doc.traefik.io/traefik/getting-started/quick-start/)
-[!ref Caddy **(not yet written)**](./caddy.md)
+[!ref Traefik **(External link)**](./traefik.md)
+[!ref Caddy **(External link)**](./caddy.md)

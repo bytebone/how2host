@@ -1,6 +1,6 @@
 ---
 # author: rainer
-# order: 40
+order: 1 #remove this once the other reverse proxy guides are done
 ---
 # Nginx
 
