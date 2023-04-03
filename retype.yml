@@ -1,0 +1,24 @@
+input: src
+output: build
+url: https://justrainer.github.io/selfhost-guides/
+branding:
+  title: VPS Guides
+  label: Docs
+# links:
+# - text: Getting Started
+#   link: https://retype.com/guides/getting-started/
+footer:
+  copyright: "&copy; Copyright {{ year }}. All rights reserved."
+meta:
+  title: " | VPS Guides"
+edit:
+  repo: "https://github.com/justrainer/selfhost-guides"
+  base: /src
+  label: "Edit on GitHub"
+gravatar:
+  enabled: false
+snippets:
+  lineNumbers:
+    - yaml
+    - yml
+    - sh
