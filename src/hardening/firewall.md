@@ -5,10 +5,6 @@ order: 50
 
 # Strict Firewall
 
-## Prerequisites
-
-[!ref icon="check-circle"](./3-reverse-proxy/index.md)
-
 ## Short summary
 
 !!!info

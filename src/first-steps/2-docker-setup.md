@@ -7,10 +7,6 @@ order: 40
 
 [!ref Official Docs](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
 
-## Prerequisites
-
-[!ref icon="check-circle"](./1-vps-setup.md)
-
 ## Setting up Docker and Docker Compose
 
 This step is fairly simple. If you're not already, connect to your server via SSH. We're now going to run a couple of commands:
