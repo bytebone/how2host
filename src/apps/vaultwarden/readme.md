@@ -74,7 +74,7 @@ Now, open the file with `nano .env` and change the following lines:
 - `DATABASE_URL` specifies the database connection. It should look like this: 
 
   ```
-  DATABASE_URL=postgresql://vault:<db_password>@vaultwarden-db:5432/vault
+  DATABASE_URL=postgresql://vault:<db_password>@vaultwarden-db:5432/vaultwarden
 
   ```
   - Use the <db_password> you've specified in the compose file!
