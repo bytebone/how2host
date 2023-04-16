@@ -1,9 +1,9 @@
 ---
 # author: rainer
-order: 30
+order: 50
 ---
 
-# Setup the Firewall
+# Strict Firewall
 
 ## Prerequisites
 
