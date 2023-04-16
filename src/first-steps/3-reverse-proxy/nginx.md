@@ -12,9 +12,7 @@ order: 1 #remove this once the other reverse proxy guides are done
 
 ## Installation with Docker Compose
 
-Nginx is a reverse proxy, which we will use to direct traffic on your domain name to the different services on your server. There are different options to fulfill this task, such as [bare nginx](https://www.nginx.com/blog/deploying-nginx-nginx-plus-docker/), [traefik](https://doc.traefik.io/traefik/getting-started/quick-start/) and [caddy](). You're free to explore these other options, but they won't be covered in this guide.
-
-One thing that many people don't properly set up is their ports. No matter which app you're going to set up in the future, their documentation will ask you to open ports on your hosts. This means that the services are easily accessible to anyone using a combination of your servers IP and the specified port of the host. **Doing this is a big security risk and defies any use of a reverse proxy!** It is important to understand that you do not need to open any ports to make a service accessible to Nginx, and therefor the open internet. I'll point this out again in a moment.
+Nginx is a reverse proxy, which we will use to direct traffic on your domain name to the different services on your server. Since the classic Nginx is entirely configured in text files, we will be using an extension called "Nginx Proxy Manager" or "NPM" for short. It automates the creation of your config files with an easy-to-use web interface and allows for a fast and easy overview and management of your hosts.
 
 To get started with the Nginx setup, create a new folder at any location you please. As an example, we're going to use `mkdir -p /home/docker/nginx`, followed by `cd /home/docker/nginx`. Now, run `nano compose.yml` and paste the following code:
 
@@ -119,3 +117,9 @@ volumes:
 ```
 
 Exit and save out of nano, then run `docker compose up -d` to start Nginx again, but this time in the background. Reload the Nginx website to make sure it's running and working, and run `lsof -Pni | grep docker` in your terminal to confirm that only port 443 is opened.
+
+## Important information for future apps
+
+Many people get confused about opening up their ports. Most app documentations tell you to open ports in the Docker Compose script. However, opening a port is a big security risk and defeats the purpose of a reverse proxy. Remember, **you do not need to open any ports** to make a service accessible to Nginx and therefore the open internet. Just add the new container to your nginx network (i.e. `nginx_default`), note the required port and enter both container name and port in the Nginx web interface when creating the host.
+
+Similarly, instead of using IP addresses to refer to hosts, always use the container name, which Docker automatically resolves. This applies to Nginx hosts and apps accessing other services, for example a separated database container.
