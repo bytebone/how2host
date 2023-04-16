@@ -1,13 +1,14 @@
 ---
 # author: rainer
-icon: shield-lock
+icon: key
+category: [Security]
 ---
 
 # Vaultwarden
 
 ## Prerequisites
 
-[!ref icon="check-circle" text="Entire First Steps"](../../first-steps/1-vps-setup.md)
+[!ref icon="check-circle" text="Complete First Steps"](../../first-steps/1-vps-setup.md)
 
 ## Installing Vaultwarden
 

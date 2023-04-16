@@ -37,6 +37,9 @@ services:
 		volumes:
 			- data:/data
 			- data:/etc/letsencrypt
+        networks:
+            - default
+            - internal
 		depends_on:
 			- db
 
@@ -47,6 +50,8 @@ services:
 		command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-file-per-table=1 --skip-innodb-read-only-compressed
 		volumes:
 			- db:/var/lib/mysql
+        networks:
+            - internal
 		environment:
 			- MYSQL_ROOT_PASSWORD=<random string #2>
 			- MYSQL_PASSWORD=<random string #1>
@@ -55,6 +60,7 @@ services:
 
 networks:
 	default:
+    internal:
 
 volumes:
 	db:
@@ -67,14 +73,14 @@ volumes:
    - You need to generate two random strings as passwords, and put them in the appropriate spots. You can do that with `openssl rand -base64 20`. Make sure that the password matches in the two places using `<random string #1>`! 
    - For now, we will expose both port 80 and 81, which are unsecure ports that we will close down in a second.
    - The `container_name` property manually defines the name, since the auto generated names are long and ugly. We will need to enter this into the Nginx interface in a minute!
- - The `networks` section defines the docker network that Nginx will sit in. In the future, any new container you want accessible from the internet needs to be in this network.
+ - The `networks` section defines two networks. the `default` network allows you to expose services to the internet. the `internal` network services exclusively for the communication between Nginx and its database.
  - The `volumes` section defines two volumes, which are storage locations for persistent data, since a container will be deleted with all its included data whenever you stop or restart it.
 
 As you've done before, exit nano and save your changes. Once you've left nano, run `docker compose up` to download and start Nginx with its components. Once the logs mention a successful startup, open your browser and enter into the address bar `<your server ip>:81`. This should bring up the NPM login screen. The login credentials are `admin@example.com` and `changeme` as the password. You will be prompted to create a new password immediately.
 
 Once logged in, navigate to the green "Proxy Hosts" section, click "Add Proxy Host" in the top right, and enter the following details:
 
-- **Domain Names:** proxy.your.domain (replace `your.domain` with your actual domain)
+- **Domain Names:** `proxy.your.domain` (replace `your.domain` with your actual domain)
 - **Forward Hostname:** nginx (this is the name of the container in docker)
 - **Port:** 81
 - **Toggle Common Exploits:** On
@@ -112,6 +118,7 @@ services:
 
 networks:
 	default:
+    internal:
 
 volumes:
 	db:
