@@ -28,6 +28,12 @@ If you are interested in contributing to our guides, please check the pinned iss
 
 The official documentation, with all the available components and icons, can be found [here](https://retype.com/components/). Before starting your work, please make yourself familiar with the available components, since there are many helpful tools that might make your guide easier to structure and therefore read.
 
+## Default Branches
+
+1. The `main` branch hosts the raw code currently hosted. Pushes here will instantly reflect on the website.
+2. The `public` branch contains the actual built code for the website. **Pushes here will be rejected**.
+3. New articles in development can be stored on a fittingly named branch. There is no autobuilding of these branches.
+
 ## Formatting guidelines
 
 1. If writing a new app guide, use the [app template](src/apps/_template.md?plain=1) as reference
