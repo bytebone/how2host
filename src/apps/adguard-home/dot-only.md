@@ -12,7 +12,7 @@ This guide will cover the setup if you're only focussing on DoT availability. No
 
 ## Initial Network Checks
 
-If you've followed the instructions under [Firewall Setup](/first-steps/4-firewall.md), your firewall should currently only allow traffic on port 443 coming from Cloudflare IPs, and on your SSH port coming from any IP. Since DoT traffic runs on its own **port 853**, you need to add another firewall exception for this port and from any IP. 
+If you've followed the instructions under [Firewall Setup](/hardening/firewall.md), your firewall should currently only allow traffic on port 443 coming from Cloudflare IPs, and on your SSH port coming from any IP. Since DoT traffic runs on its own **port 853**, you need to add another firewall exception for this port and from any IP. 
 
 ## Adding DNS entry
 

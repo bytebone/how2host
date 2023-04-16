@@ -8,12 +8,6 @@ title: "DoH Only"
 
 # AdGuard Home with DoH only
 
-## Prerequisites
-
-[!ref icon="check-circle"](../../first-steps/1-vps-setup.md)
-[!ref icon="check-circle"](../../first-steps/2-docker-setup.md)
-[!ref icon="check-circle"](../../first-steps/3-reverse-proxy/index.md)
-
 ## content outline
 
 1. requires no special config on docker, npm or cloudflare
