@@ -6,10 +6,6 @@ order: 1 #remove this once the other reverse proxy guides are done
 
 [!ref Official Docs](https://nginxproxymanager.com/guide/#quick-setup)
 
-## Prerequisites
-
-[!ref icon="check-circle"](../2-docker-setup.md)
-
 ## Installation with Docker Compose
 
 Nginx is a reverse proxy, which we will use to direct traffic on your domain name to the different services on your server. There are different options to fulfill this task, such as [bare nginx](https://www.nginx.com/blog/deploying-nginx-nginx-plus-docker/), [traefik](https://doc.traefik.io/traefik/getting-started/quick-start/) and [caddy](). You're free to explore these other options, but they won't be covered in this guide.
@@ -38,8 +34,8 @@ services:
 			- data:/data
 			- data:/etc/letsencrypt
         networks:
-            - default
-            - internal
+          - default
+          - internal
 		depends_on:
 			- db
 
@@ -51,7 +47,7 @@ services:
 		volumes:
 			- db:/var/lib/mysql
         networks:
-            - internal
+          - internal
 		environment:
 			- MYSQL_ROOT_PASSWORD=<random string #2>
 			- MYSQL_PASSWORD=<random string #1>
@@ -60,7 +56,7 @@ services:
 
 networks:
 	default:
-    internal:
+  internal:
 
 volumes:
 	db:

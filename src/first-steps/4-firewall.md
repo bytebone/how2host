@@ -5,10 +5,6 @@ order: 30
 
 # Setup the Firewall
 
-## Prerequisites
-
-[!ref icon="check-circle"](./3-reverse-proxy/index.md)
-
 ## Short summary
 
 !!!info
