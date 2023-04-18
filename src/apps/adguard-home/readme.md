@@ -11,17 +11,25 @@ icon: shield-check                  # Add an icon from https://primer.github.io/
 
 [!ref icon="check-circle" text="Complete First Steps"](/first-steps/1-vps-setup.md)
 
-## What is AdGuard Home?
+## Introduction
 
-AdGuard Home is not a DNS server; rather, it is a DNS proxy. This means that AdGuard Home does not store a database with all DNS entries itself. Instead, it asks other servers for the response. In addition, AdGuard Home can compare the incoming DNS requests to ad-blocking filter lists and block requests that point towards advertising sources.
+### What is AdGuard Home?
 
-This means two things: firstly, the upstream DNS servers that resolve your requests no longer know your personal IP address and the websites visited by this IP address. They only see the IP address of your server. Additionally, AdGuard Home spreads your requests across many different upstream servers, further improving your anonymity.
+AdGuard Home is not a DNS server in the traditional sense; rather, it is a DNS proxy. It does not store a database with all DNS entries itself. Instead, it asks other "upstream" servers for the response. In addition, AdGuard Home can compare the incoming DNS requests to ad-blocking filter lists and block requests that point towards advertising sources.
+
+This means two things: firstly, the upstream DNS servers resolving your requests no longer know your personal IP address and the websites visited by this IP address. They only see the IP address of your server. Additionally, AdGuard Home can spread your requests across many different upstream servers, further improving your anonymity.
 
 Secondly, and this is the main benefit, the filter lists allow for a network-wide ad-blocking experience on every device you have, including in the browser, in apps, and in the operating systems themselves. This feature works regardless of whether the actual devices provide you the option to configure ad-blocking. Additionally, any changes made to your filter lists are automatically applied to every connected device.
 
 [!ref Official Docs](https://github.com/AdguardTeam/AdGuardHome/wiki/Docker)
 
-## Different DNS methods
+!!!contrast Disclaimer
+AdGuard Home and it's multiple DNS protocols can be set up in countless ways, and the following guide is by no means the easiest approach. If you know exactly what you're doing and which features you want, you can get by with less steps than these. 
+
+This guide however aims at creating a fully-featured groundwork, where you can easily add or remove features at any time without having to retrace your steps and redoing half of the configuration.
+!!!
+
+### Different DNS protocols
 
 There are four differenct methods with which a device can make a DNS request to a DNS resolver:
 
@@ -39,39 +47,123 @@ This method uses its own port for communication. It has to bypass the Cloudflare
 This uses the same port as DoT by default, but can be set to use different ports as well. It offers DoT-like encryption while promising lower latency and will require additional applications on most devices. However, this method will not be covered in these guides.
 ===
 
-### Which method to use
+### Which one to use
 
 The decision of which DNS method to use heavily depends on the devices you use daily. If you (or your users) use Android phones, you should offer DoT support. If you need to connect Windows devices, you should look into DoH support. Alternatively, if your home router supports one method or the other, you can use the DNS on the router level don't need to worry about your hardwired home devices anymore (e.g., TV, PC, consoles, and so on).
 
-The following guides will look into three different configurations with DoH and DoT, and you can decide which fits your situation best.
+DoH is the easiest protocol to set up, and the other protocols build on top of the DoH requirements for their functionality. Therefore you only need to decide if you want the additional DoT support or not.
 
-## Different Setup Methods
+## HTTPS Setup
 
-!!!warning Attention
-These guides cover only some of many possible approaches. There are many more ways to make it work, but I found these to be the most sensical and broadly applicable.
+### Getting an SSL certificate
+
+To use encrypted DNS methods like DoT and DoH, you need an SSL certificate. There are many ways to acquire an SSL certificate, but since Nginx can generate and manage certificates for free and is already running anyways, we'll simply use that to do the job for us.
+
+!!!warning
+The Cloudflare certificate you've used on other, regular hosts is not a full certificate and cannot be used for encrypting DNS traffic. Generating a separate certificate is obligatory!
 !!!
 
-### DoT only
+To start, go into your Nginx interface and switch to the `SSL Certificates` tab. Here, click on `Add SSL Certificate` and choose `Let's Encrypt`. In the popup window, enter the domain name you want to serve DNS requests on, once directly and once with a wildcard (e.g. `dns.your.domain` and `*.dns.your.domain`). Enter an email address (it should be a real one you're reachable under) and tick `Use a DNS Challenge`.
 
-**Pro:** natively supported on almost any device, uses TLS encryption\
-**Con:** requires software on windows, exposes VPS IP through a DNS entry
+In the new Window, select `Cloudflare` as your DNS provider. The new text field expects a Cloudflare API key, which you can create under https://dash.cloudflare.com/?to=/profile/api-tokens. On this page, click on `Create Token`, followed by `Edit zone DNS`: `Use Template`.
+
+On the new screen, under `Zone Resources`, select your domain. You can also enter your server's IP addresses (both IPv4 and IPv6) to further ensure only that server can use the API key in case it gets leaked. I've chosen to not limit this to ensure no future issues, and instead opted for not saving the API key anywhere. When you're done setting things up, click on `Continue to Summary`, followed by `Create Token` and `Copy` on the token field.
+
+Now, switch back to your Nginx tab where you should still have the "DNS Challenge" Window open. You can now paste your generated token into the textbox, replacing the placeholder value. Finally, agree to the ToS and save your certificate. It might load for a while, while it's working with Cloudflare to create the certificate, but it shouldn't take too long.
+
+Once it's done, you need to confirm the certificate ID. To do so, find the certificate in your SSL Certificate list, click on the three dots to the right and note down the number from the first line. For example, if it says `Certificate #10`, you need to note down the number 10.
+
+### AdGuard Compose file
+
+To get a basic AdGuard instance up and running, open your terminal, create a new work directory for your AdGuard config and add the `compose.yml`:
+
+```yml compose.yml
+services:
+  adguard:
+    image: adguard/adguardhome
+    container_name: adguard
+    restart: unless-stopped
+    # ports:
+    #   - 853:853/tcp
+    volumes:
+      - work:/opt/adguardhome/work
+      - conf:/opt/adguardhome/conf
+      - nginx_nginx:/opt/adguardhome/cert:ro
+    networks:
+      - nginx_default
+
+volumes:
+  work:
+  conf:
+  nginx_nginx:
+    external: true
+
+networks:
+  nginx_default:
+    external: true
+```
+
+This will create two new volumes for AdGuards work and config files, and also mount the existing Nginx volume, which contains the SSL certificate you just created. Start the container with `docker compose up` and let it set up its configuration. Once it's done, open your Nginx interface and add a new host: 
+
+- **Domain Name:** `dns.your.domain` (or whichever else you generated the SSL certificate for)
+- **Forward Hostname:** adguard
+- **Port:** 3000
+- **Block Common Exploits:** true
+
+Select your Cloudflare SSL Certificate in the SSL tab, **not the one you just generated**. You can now access your admin panel under the domain you configured and go through the initial setup steps. On the first page, set the `Admin interface port` to 3000, while ignoring every other setting. Create your admin user at the end, finish the setup, and re-enter the apps' web address into your address bar. You should now be able to log into the AdGuard interface.
+
+### Encryption
+
+To enable encryption for DoH, as well as the other protocols, look at the top bar and click on `Settings` > `Encryption Settings`, and set the following values:
+
+1. Enable Encryption
+2. **Server Name:** the server name you want to resolve DNS requests under, e.g. `dns.your.domain`
+3. Set `HTTPS port` to 443
+4. Under certificates, click `Set a file path` for both options, and enter the following in the respective fields:
+    - Earlier, you [noted down the SSL certificate ID](#getting-an-ssl-certificate). Replace the questionmarks in `npm-??` with that number.
+    - **Field 1:** `/opt/adguardhome/cert/live/npm-??/fullchain.pem`
+    - **Field 2:** `/opt/adguardhome/cert/live/npm-??/privkey.pem`
+
+!!!danger Attention
+Adding the certificates like this has dangerous implications. AdGuard has access to all the configuration files, access logs and certificates of every single one of your hosts. Should someone find an exploit in the AdGuard dashboard, this sensitive data may be at risk. 
+
+You can directly bind-mount the certificates in the AdGuard container, but will then have to reconfigure this every time a new certificate gets generated (4 times a year). If you find a better solution, **please create an issue on GitHub**.
+!!!
+
+==- **Error:** Certificate Chain is invalid
+If you get this error, the number you've entered is incorrect, or there was a different error reading the directory. 
+
+- Make sure you've copied the filepaths from this guide properly and without missing any characters. This applies mainly to the `compose.yml` line 11, and the paths from the instructions above.
+- Ensure that you've written the number exactly like in the web interface (e.g. `npm-2` instead of `npm-02`).
+
+If you still cannot get it to work, you have to figure out the path from the terminal.\
+Run the command `docker exec adguard ls /opt/adguardhome/cert/live/`. This should return at least one folder, including one which has the number of your certificate from the Nginx interface.
+
+```!#3
+$ docker exec adguard ls /opt/adguardhome/cert/live/
+README
+npm-10
+```
+This folders' name is what you need to copy to the path in the AdGuard settings page: `/opt/adguardhome/cert/live/npm-10/fullchain.pem`
+===
+
+Once both fields get a green label, click on "Save configuration". Immediately after this, the website will **no longer be reachable**, which is normal. To fix it, switch back to Nginx, edit your AdGuard host configuration, and change the application port from 3000 to 443. After saving, the AdGuard website will be reachable again, and you can continue setting the app up.
+
+## Additional Protocols
+
+### DoT
+
+If you want to add DoT support to your DNS, you need to go through some additional steps to get it all working. Read more about that here.
 
 [!ref](./dot-only.md)
 
-### DoH only
+### QUIC
 
-**Pro:** no compromise on VPS IP protection, every DNS request runs through Cloudflare and Nginx\
-**Con:** requires software on Android, suffers from highly increased response time (5-7x) due to the proxy chain
+!!!
+This guide has not been written yet, and will be added in the near future.
+!!!
 
-[!ref](./doh-only.md)
-
-### DoT and DoH
-
-This combines both Pros and Cons from the selective approaches. Since the DoT method already somewhat allows DoH use, this section is only an extension of the DoT guide with the goal of making the use of DoH more practical and streamlined.
-
-[!ref](./dot-doh.md)
-
-## AdGuard Configuration
+## Further Configuration
 
 Once you've finished setting up AdGuard with the method you desire, you can continue here to finish setting up AdGuard.
 
