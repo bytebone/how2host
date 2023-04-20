@@ -30,7 +30,7 @@ It is **integral** to disable the Cloudflare Proxy for all of the entries you cr
 
 ## Adjusting the Firewall
 
-The steps in this chapter only apply to you if you've followed the instructions under [Firewall Setup](/hardening/firewall.md), or have done your own changes to the Firewall. 
+The following steps only apply to you if you've followed the instructions under [Firewall Setup](/hardening/firewall.md), or have done your own changes to the Firewall. 
 
 ==- Read along
 Your firewall should currently only allow traffic on port 443 coming from Cloudflare IPs, and on your SSH port coming from any IP. Since DoT traffic runs on its own **port 853**, you need to add another firewall exception for this port and from any IP. Only then can devices anywhere freely access the DNS server.
@@ -47,6 +47,38 @@ If you want to remove this split, you have to remove the firewall rule limiting 
 Since both DoH and DoT require an encrypted connection, and therefore access via the web address, removing the restriction on port 443 should not pose any security risk. Nonetheless, if you find an alternative approach that enables only the DNS traffic to be allowed from any IP, please open a GitHub issue.
 !!!
 ===
+
+## Exposing port 853
+
+The compose file from the main guide already had the lines for exposing port 853 included, but commented out. To use port 853, you need to expose it on the container first. To do this, open the `compose.yml` in your text editor, and remove the #-signs from the two lines related to the port 853:
+
+```yml #6-7 compose.yml
+services:
+  adguard:
+    image: adguard/adguardhome
+    container_name: adguard
+    restart: unless-stopped
+    ports:
+      - 853:853/tcp
+    volumes:
+      - work:/opt/adguardhome/work
+      - conf:/opt/adguardhome/conf
+      - nginx_nginx:/opt/adguardhome/cert:ro
+    networks:
+      - nginx_default
+
+volumes:
+  work:
+  conf:
+  nginx_nginx:
+    external: true
+
+networks:
+  nginx_default:
+    external: true
+```
+
+To apply these changes, save and quit out of the editor and run `docker compose up -d` again. No need to shut down the container first, it will simply be recreated. If you want, you can run `docker port adguard` and/or `lsof -Pni | grep docker` to confirm that the port 853 has successfully been opened.
 
 ## Configuring AdGuard
 

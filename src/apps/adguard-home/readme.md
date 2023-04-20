@@ -24,7 +24,7 @@ Secondly, and this is the main benefit, the filter lists allow for a network-wid
 [!ref Official Docs](https://github.com/AdguardTeam/AdGuardHome/wiki/Docker)
 
 !!!contrast Disclaimer
-AdGuard Home and it's multiple DNS protocols can be set up in countless ways, and the following guide is by no means the easiest approach. If you know exactly what you're doing and which features you want, you can get by with less steps than these. 
+AdGuard Home and it's multiple DNS protocols can be set up in countless ways, and the following guide is by no means the easiest or best approach. If you know exactly what you're doing and which features you want, you can get by with less steps than these. 
 
 This guide however aims at creating a fully-featured groundwork, where you can easily add or remove features at any time without having to retrace your steps and redoing half of the configuration.
 !!!
@@ -63,13 +63,11 @@ To use encrypted DNS methods like DoT and DoH, you need an SSL certificate. Ther
 The Cloudflare certificate you've used on other, regular hosts is not a full certificate and cannot be used for encrypting DNS traffic. Generating a separate certificate is obligatory!
 !!!
 
-To start, go into your Nginx interface and switch to the `SSL Certificates` tab. Here, click on `Add SSL Certificate` and choose `Let's Encrypt`. In the popup window, enter the domain name you want to serve DNS requests on, once directly and once with a wildcard (e.g. `dns.your.domain` and `*.dns.your.domain`). Enter an email address (it should be a real one you're reachable under) and tick `Use a DNS Challenge`.
+To start, go into your Nginx interface and switch to the `SSL Certificates` tab. Here, click on `Add SSL Certificate` and choose `Let's Encrypt`. In the popup window, enter the domain name you want to serve DNS requests on, once directly and once with a wildcard (e.g. `dns.your.domain` and `*.dns.your.domain`). Enter an email address (it should be a real one you're reachable under), tick `Use a DNS Challenge` and select `Cloudflare` as your DNS provider.
 
-In the new Window, select `Cloudflare` as your DNS provider. The new text field expects a Cloudflare API key, which you can create under https://dash.cloudflare.com/?to=/profile/api-tokens. On this page, click on `Create Token`, followed by `Edit zone DNS`: `Use Template`.
+To continue, you need a Cloudflare API key, which you can create under https://dash.cloudflare.com/?to=/profile/api-tokens. On this page, click on `Create Token`, followed by `Edit zone DNS`: `Use Template`. On the new screen, under `Zone Resources`, select your domain. You can also enter your servers IP addresses (both IPv4 and IPv6) to further ensure only that server can use the API key in case it gets leaked. I've chosen to not limit this to ensure no future issues, and instead opted for not saving the API key anywhere. When you're done setting things up, click on `Continue to Summary`, followed by `Create Token` and `Copy` on the token field.
 
-On the new screen, under `Zone Resources`, select your domain. You can also enter your server's IP addresses (both IPv4 and IPv6) to further ensure only that server can use the API key in case it gets leaked. I've chosen to not limit this to ensure no future issues, and instead opted for not saving the API key anywhere. When you're done setting things up, click on `Continue to Summary`, followed by `Create Token` and `Copy` on the token field.
-
-Now, switch back to your Nginx tab where you should still have the "DNS Challenge" Window open. You can now paste your generated token into the textbox, replacing the placeholder value. Finally, agree to the ToS and save your certificate. It might load for a while, while it's working with Cloudflare to create the certificate, but it shouldn't take too long.
+Now, switch back to your Nginx tab where you should still have the "DNS Challenge" Window open. Replace the placeholder value with your generated token. Finally, agree to the ToS and save your certificate. It might load for a while, while it's working with Cloudflare to create the certificate, but it shouldn't take too long.
 
 Once it's done, you need to confirm the certificate ID. To do so, find the certificate in your SSL Certificate list, click on the three dots to the right and note down the number from the first line. For example, if it says `Certificate #10`, you need to note down the number 10.
 
@@ -103,7 +101,7 @@ networks:
     external: true
 ```
 
-This will create two new volumes for AdGuards work and config files, and also mount the existing Nginx volume, which contains the SSL certificate you just created. Start the container with `docker compose up` and let it set up its configuration. Once it's done, open your Nginx interface and add a new host: 
+This will create two new volumes for AdGuards work and config files, and also mount the existing Nginx volume, which contains the SSL certificate you just created. Start the container with `docker compose up -d` and let it set up its configuration. Once it's done, open your Nginx interface and add a new host: 
 
 - **Domain Name:** `dns.your.domain` (or whichever else you generated the SSL certificate for)
 - **Forward Hostname:** adguard
@@ -118,7 +116,7 @@ To enable encryption for DoH, as well as the other protocols, look at the top ba
 
 1. Enable Encryption
 2. **Server Name:** the server name you want to resolve DNS requests under, e.g. `dns.your.domain`
-3. Set `HTTPS port` to 443
+3. Set `HTTPS port` to 443 and emptry the other two fields
 4. Under certificates, click `Set a file path` for both options, and enter the following in the respective fields:
     - Earlier, you [noted down the SSL certificate ID](#getting-an-ssl-certificate). Replace the questionmarks in `npm-??` with that number.
     - **Field 1:** `/opt/adguardhome/cert/live/npm-??/fullchain.pem`
@@ -213,3 +211,7 @@ If you want to limit the devices that are able to use your service, you can ente
 The `DNS blocklists` page under `Filters` contains the list of adblock-lists that the DNS server should deny access to, and is where you configure the adblocking behaviour of the server. To get started, click on `Add blocklist` and `Choose from the list` to get a handy list of sources to quickly add.
 
 Which lists to add is very opinionated. Be aware however that higher amounts of total rules also increase the RAM consumption of the app, and negatively affect the response time of every request. Don't simply add every list there is, but pick the most efficient ones carefully. You can always check the query logs and see which lists are blocking requests and disable ones that don't do any work.
+
+## Final Thoughts
+
+You've finished all the steps and now have a fully functioning and ad-blocking DNS server at your hands. You can check in every once in a while and feel happiness over all the ads and trackers you've successfully blocked.
