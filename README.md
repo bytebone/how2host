@@ -28,6 +28,10 @@ If you are interested in contributing to our guides, please check the pinned iss
 
 The official documentation, with all the available components and icons, can be found [here](https://retype.com/components/). Before starting your work, please make yourself familiar with the available components, since there are many helpful tools that might make your guide easier to structure and therefore read.
 
+## License
+
+This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. This allows you to share (mirror) and adapt (borrow and alter) the repos content, provided that you credit the repo and don't use it for commercial purposes. View a copy of this license [here](http://creativecommons.org/licenses/by-nc/4.0/). 
+
 ## Default Branches
 
 1. The `main` branch hosts the raw code currently hosted. Pushes here will instantly reflect on the website.
