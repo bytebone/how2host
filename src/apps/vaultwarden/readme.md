@@ -58,7 +58,7 @@ Some notes on this compose file:
 
 - Make sure to replace the password in **line 20**
 - The line `env_file: .env` specifies a separated environment file that many containers use for customization.
-- Vaultwarden uses a PostreSQL database to store all the data you provide it. This database **doesn't need to be** accessible from the outside world - it would be very problematic if it was. Therefore, we don't add it to the Nginx network. We create a separate network, just for the communication between Vaultwarden and the database. Nothing non-Vaultwarden should be in this network!
+- Vaultwarden uses a PostgreSQL database to store all the data you provide it. This database **doesn't need to be** accessible from the outside world - it would be very problematic if it was. Therefore, we don't add it to the Nginx network. We create a separate network, just for the communication between Vaultwarden and the database. Nothing non-Vaultwarden should be in this network!
 - In this compose file, I've specified the postgres release `14-alpine`. This will be updated in the future, to `15-alpine`, `16-alpine` and so on. Check the [official Docker repo](https://hub.docker.com/_/postgres) for the latest version and update this accordingly.
 
 As mentioned, we also need an environment variables file. You can get it from the [official repo](https://github.com/dani-garcia/vaultwarden/blob/main/.env.template), or use this direct command to download it right into your project folder: 
