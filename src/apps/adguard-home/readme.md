@@ -125,7 +125,7 @@ To enable encryption for DoH, as well as the other protocols, look at the top ba
 !!!danger Attention
 Adding the certificates like this has dangerous implications. AdGuard has access to all the configuration files, access logs and certificates of every single one of your hosts. Should someone find an exploit in the AdGuard dashboard, this sensitive data may be at risk. 
 
-You can directly bind-mount the certificates in the AdGuard container, but will then have to reconfigure this every time a new certificate gets generated (4 times a year). If you find a better solution, **please create an issue on GitHub**.
+You can directly bind-mount the certificates in the AdGuard container, but will then have to reconfigure this every time a new certificate gets generated (4 times a year). If you find a better solution, [**please create an issue on the How2Host GitHub**](https://github.com/justrainer/how2host/issues/new).
 !!!
 
 ==- **Error:** Certificate Chain is invalid

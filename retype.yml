@@ -1,18 +1,24 @@
 input: src
 output: build
-url: https://justrainer.github.io/selfhost-guides/
+url: https://how2host.it
+cname: false
 branding:
-  title: Selfhost Guides
+  title: How2Host
   label: Beta
-# links:
-# - text: Getting Started
-#   link: https://retype.com/guides/getting-started/
+links:
+- text: Home
+  link: /
+  icon: home-fill
+- text: Contribute
+  link: "https://github.com/justrainer/how2host"
+  icon: pencil
+  target: blank
 footer:
   copyright: "&copy; Copyright {{ year }}. All rights reserved."
 meta:
-  title: " | Selfhost Guides"
+  title: " | How2Host"
 edit:
-  repo: "https://github.com/justrainer/selfhost-guides"
+  repo: "https://github.com/justrainer/how2host"
   base: /src
   label: "Edit on GitHub"
 gravatar:
@@ -22,3 +28,9 @@ snippets:
     - yaml
     - yml
     - sh
+editor:
+  enabled: false
+integrations:
+  plausible:
+    domain: how2host.it
+    host: analytics.rainers.space
