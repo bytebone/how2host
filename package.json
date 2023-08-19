@@ -1,9 +1,9 @@
-{
+  {
   "scripts": {
-    "start": "retype watch",
+    "start": "retype start",
     "build": "retype build"
   },
   "dependencies": {
-    "retypeapp": "^2.4.0"
+    "retypeapp": "^3.0.0"
   }
 }
