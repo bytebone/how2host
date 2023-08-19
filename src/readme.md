@@ -11,7 +11,7 @@ layout: page
 
 ### What's this about?
 
-If you're considering setting up your own VPS or are currently in the process of doing so, with the goal of gaining independence from large, centralized corporations, **this comprehensive collection of guides is here to assist you**. These guides will walk you through every step, starting from the initial setup and leading all the way to configuring apps.
+If you're considering setting up your own VPS or are currently in the process of doing so, with the goal of gaining independence from large, centralized corporations, **this comprehensive collection of guides is here to assist you**. These guides will walk you through every step, starting from the initial setup and leading all the way to configuring apps. This way, you won't have to read through countless different documentations and still figure out half of the work yourself!
 
 ### Where do I start?
 
