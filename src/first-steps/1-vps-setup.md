@@ -1,6 +1,6 @@
 ---
 # author: rainer
-order: 50
+order: -1
 ---
 
 # Initial VPS Setup
@@ -114,16 +114,22 @@ From now on, to connect to the server, all you need to enter is `ssh <server nam
 
 [!ref Official Docs](https://developers.cloudflare.com/learning-paths/get-started/#live_website)
 
+!!!info
+If you connect your server to Cloudflare, they will act as a secondary proxy for all your traffic, meaning that your server will send all data through a hidden and secure tunnel to Cloudflare, which then sends that data to your visitors. This means that Cloudflare can, in theory, **read the traffic and data passing through**.
+
+It is your choice to decide if you'd rather hide and protect your server from potential attackers, or not share your data with a third party.
+!!!
+
 To access your services with your domain name, we need to connect one to the other first. To help us do this **securely**, we'll make use of Cloudflare's DNS Proxy service, which will hide your server IP from anyone accessing your domain, increasing security by obfuscation. To start, go to https://dash.cloudflare.com/sign-up and create an account.
 
-Once you're in the dashboard, click "Add Site", enter the domain name you've chosen before and select the free plan when prompted. On the next page, you should be confronted with the DNS entries on the domain - of which you probably have none. Should there be any A or AAAA entries, remove them, then add new ones, providing your servers IP address. 
+Once you're in the dashboard, click "Add Site", enter the domain name you've registered and select the free plan when prompted. On the next page, you should be confronted with the DNS entries on the domain - of which you probably have none. Should there be any A or AAAA entries, remove them, then add new ones, providing your servers IP address. 
 
 - use A entries for IPv4 (123.456.78.9)
 - use AAAA entries for IPv6 (2a02:81b4:c0:27:b227:9b:::)
 
 For each IPv4 and IPv6, make two DNS entries - one using `@` as name, and one using `*`. This ensures that **every** request gets directed at your server, no matter what.
 
-Once you're done, confirm and make note of the following page. You will now need to go to the provider where you've bought your domain name, and find the DNS settings panel. You're looking for the setting to change the **domains' nameservers**. Change them according to Cloudflares' instructions, and confirm on the Cloudflare page once you're done. This change can take some time to propagate. You'll need a bit of patience until it comes through, but Cloudflare will send you an e-mail once it's completed.
+Once you're done, confirm and make note of the following page. You will now need to go to the provider where you've bought your domain, and find the DNS settings panel. You're looking for the setting to change the **domains' nameservers**. Change them according to Cloudflares' instructions, and confirm on the Cloudflare page once you're done. This change can take some time to propagate. You'll need a bit of patience until it comes through, but Cloudflare will send you an e-mail once it's completed.
 
 While this is processing, you can click through the different menus of the page and get an overview of all the things you can change. Feel free to change what you're confident you understand, or read along on the next section.
 

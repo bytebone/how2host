@@ -1,5 +1,4 @@
-# The VPS Guides Project
-> We need a better name for this
+# Welcome to How2Host
 
 ## Idea and Motivation
 
@@ -21,7 +20,6 @@ If you are interested in contributing to our guides, please check the pinned iss
     $ npm run start
 
     Build a local version of the final website
-    (usually not needed)
     $ npm run build
 
 **Before making a PR with a new version or guide added, make sure to build the website once to make sure it goes through with no errors or warnings.**
@@ -42,6 +40,6 @@ This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 I
 
 1. If writing a new app guide, use the [app template](src/apps/_template.md?plain=1) as reference
 2. Leave blank lines after every heading
-3. When linking to either internal or outside sources, especially for the prerequisites and the source / official docs links, use the [reference links](https://retype.com/components/reference-link/) provided by Retype for better visibility
+3. When linking to internal or outside sources, especially for the prerequisites and the source / official docs links, use the [reference links](https://retype.com/components/reference-link/) provided by Retype for better visibility
 4. When pasting compose files, use code blocks along with "yaml" specification and filename declaration for clarity
 5. When writing app guides, **always** put them in a subdirectory named after the app / task. the Markdown file should be called `readme.md` for easy display on GitHub. Place additional files required for this guide in the same directory.
