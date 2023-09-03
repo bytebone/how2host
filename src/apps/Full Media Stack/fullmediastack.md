@@ -242,7 +242,7 @@ To set up Bazarr, follow these steps:
     4. Enable subtitles via Settings > Languages.
     5. Go to "Default Settings" and choose what you want to have subtitles.
 
-# Final Thoughts
+# Final Thoughts 
 
 You are donne setting up a Full Media Stack! Have fun watching your favorite Movie, TV Show or Anime!
 
