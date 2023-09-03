@@ -13,7 +13,7 @@ icon: device-camera-video   # Add an icon from https://primer.github.io/octicons
 
 [!ref icon="check-circle" text="First Steps"](../../first-steps/2-docker-setup.md)
 
-# Information about a "Full Media Stack"
+# Information about "Full Media Stack"
 
 A Full Media Stack is a collection of Programs for watching Movies and TV-Shows. By hosting one, you can enjoy watching Movies and TV Shows without having Privacy concerns.
 The Programs what we are gonna use are listed here:
