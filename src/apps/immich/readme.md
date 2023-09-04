@@ -127,7 +127,7 @@ REDIS_HOSTNAME=immich_redis
 UPLOAD_LOCATION=./upload
 
 # Web panel endpoint
-VITE_SERVER_ENDPOINT=http://localhost:2283/api
+VITE_SERVER_ENDPOINT=https://immich.<domain>/api
 
 # Disable TypeSense
 TYPESENSE_ENABLED=false
@@ -138,6 +138,10 @@ Immich by default uses the upload location `./upload`. Be aware that all data wi
 !!!
 
 Don't forget to replace the `<database_password>` with your own **unique** password!
+
+!!!danger Danger
+The `VITE_SERVER_ENDPOINT` environment variable defines where the Web Panel will be located (e.g `https://immich.example.com/api`). Make sure there is **no** toward slash at the end and that `/api` is kept.
+!!!
 
 ## Running Immich
 
