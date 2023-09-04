@@ -139,7 +139,7 @@ Immich by default uses the upload location `./upload`. Be aware that all data wi
 
 Don't forget to replace the `<database_password>` with your own **unique** password!
 
-!!!danger Danger
+!!!danger Web Panel
 The `VITE_SERVER_ENDPOINT` environment variable defines where the Web Panel will be located (e.g `https://immich.example.com/api`). Make sure there is **no** foward slash at the end and that `/api` is kept.
 !!!
 
@@ -147,7 +147,7 @@ The `VITE_SERVER_ENDPOINT` environment variable defines where the Web Panel will
 
 You can now run `docker-compose up -d` to install and run the Immich container.
 
-Once the containers are up and running, you can access Immich by navigating to `https://<your_domain>:2283` in your web browser. You'll be prompted to create an admin account and set up your media library.
+Once the containers are up and running, you can access Immich by navigating to `https://immich.<yourdomain>` in your web browser. You'll be prompted to create an admin account and set up your media library.
 
 ## Closing words
 
