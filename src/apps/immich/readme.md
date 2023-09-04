@@ -106,8 +106,6 @@ services:
       # Make sure these values get passed through from the env file
       - IMMICH_SERVER_URL
       - IMMICH_WEB_URL
-    ports:
-      - 2283:8080
     depends_on:
       - immich-server
       - immich-web
@@ -131,13 +129,13 @@ Then, paste the following contents:
 
 ```bash
 # Database
-DB_HOSTNAME=immich-database-test
+DB_HOSTNAME=immich_postgres
 DB_USERNAME=postgres
 DB_PASSWORD=<database_password>
 DB_DATABASE_NAME=immichdb
 
 # Redis
-REDIS_HOSTNAME=immich-redis-test
+REDIS_HOSTNAME=immich_redis
 
 # Upload File Config
 UPLOAD_LOCATION=./upload
@@ -147,6 +145,10 @@ VITE_SERVER_ENDPOINT=http://localhost:2283/api
 
 TYPESENSE_ENABLED=false
 ```
+
+!!!
+Immich by default uses the upload location `./upload`. Be aware that all data will be stored in that specific folder. If you **don't** have enough storage, pick another location.
+!!!
 
 Don't forget to replace the `<database_password>` with your own **unique** password!
 
