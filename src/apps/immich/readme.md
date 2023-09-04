@@ -1,7 +1,7 @@
 ---
 # author: giga
 category: [Privacy, Media]
-icon: device-camera-video 
+icon: file-media
 ---
 
 ## Prerequisites
@@ -33,7 +33,6 @@ services:
     depends_on:
       - redis
       - database
-      - typesense
     restart: always
 
   immich-microservices:
@@ -50,7 +49,6 @@ services:
     depends_on:
       - redis
       - database
-      - typesense
     restart: always
 
   immich-machine-learning:
@@ -67,18 +65,6 @@ services:
     image: ghcr.io/immich-app/immich-web:${IMMICH_VERSION:-release}
     env_file:
       - .env
-    restart: always
-
-  typesense:
-    container_name: immich_typesense
-    image: typesense/typesense:0.24.1@sha256:9bcff2b829f12074426ca044b56160ca9d777a0c488303469143dd9f8259d4dd
-    environment:
-      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
-      - TYPESENSE_DATA_DIR=/data
-      # remove this to get debug messages
-      - GLOG_minloglevel=1
-    volumes:
-      - tsdata:/data
     restart: always
 
   redis:
@@ -140,9 +126,10 @@ REDIS_HOSTNAME=immich_redis
 # Upload File Config
 UPLOAD_LOCATION=./upload
 
-# WEB
+# Web panel endpoint
 VITE_SERVER_ENDPOINT=http://localhost:2283/api
 
+# Disable TypeSense
 TYPESENSE_ENABLED=false
 ```
 
