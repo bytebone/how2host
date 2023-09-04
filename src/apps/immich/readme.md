@@ -1,6 +1,6 @@
 ---
 # author: giga
-category: [Privacy]
+category: [Privacy, Media]
 icon: device-camera-video 
 ---
 
@@ -10,11 +10,11 @@ icon: device-camera-video
 
 ## What is Immich
 
-Immich is a self-hosted, open-source platform for managing and sharing your personal media library. It provides a simple and intuitive interface for organizing and streaming your movies, TV shows, and music.
+Immich is a self-hosted, open-source photo and video backup solution.
 
 ## Installing Immich
 
-[!ref Official Docs](https://github.com/immich-app/immich)
+[!ref Official Docs](https://immich.app/docs/overview/introduction)
 
 To start, create a new directory for the Immich container files (e.g. `mkdir /home/docker/immich`), start editing with `nano compose.yml` and paste the following contents:
 
@@ -118,10 +118,6 @@ volumes:
   model-cache:
   tsdata:
 ```
-
-Some notes on this compose file:
-
-- Immich uses a Postgres database to store data, which is not accessible from the outside world. To ensure security, a separate network is created exclusively for communication between Immich and the database. This network is not meant for anything non-Immich.
 
 ## Environment Variables
 
