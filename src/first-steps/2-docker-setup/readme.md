@@ -7,6 +7,10 @@ order: -2
 
 [!ref Official Docs](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
 
+!!!
+If you've never before used Docker and are not familiar with concepts like images, containers, volumes and networks, please give the [quick intro to docker concepts](docker-concepts) a go.
+!!!
+
 ## Setting up Docker and Docker Compose
 
 This step is fairly simple. If you're not already, connect to your server via SSH. We're now going to run a couple of commands:

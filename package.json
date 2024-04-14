@@ -1,4 +1,8 @@
-  {
+{
+  "author": "bytebone",
+  "homepage": "https://how2host.it",
+  "name": "how2host",
+  "displayName": "How2Host",
   "scripts": {
     "start": "retype start",
     "build": "retype build"
