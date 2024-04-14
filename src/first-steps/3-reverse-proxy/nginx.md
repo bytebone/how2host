@@ -8,6 +8,10 @@ order: 1 #remove this once the other reverse proxy guides are done
 
 ## Installation with Docker Compose
 
+!!!
+If you're not familiar with Docker, it is recommended to read the [Docker Core Concepts page](../2-docker-setup/docker-concepts.md) before continuing here
+!!!
+
 Nginx is a reverse proxy, which we will use to direct traffic on your domain name to the different services on your server. Since the classic Nginx is entirely configured in text files, we will be using an extension called "Nginx Proxy Manager" or "NPM" for short. It automates the creation of your config files with an easy-to-use web interface and allows for a fast and easy overview and management of your hosts.
 
 To get started with the Nginx setup, create a new folder at any location you please. As an example, we're going to use `mkdir -p /home/docker/nginx`, followed by `cd /home/docker/nginx`. Now, run `nano compose.yml` and paste the following code:
@@ -32,7 +36,7 @@ services:
 			- data:/data
 			- data:/etc/letsencrypt
         networks:
-          - default
+          - proxy
           - internal
 		depends_on:
 			- db
@@ -53,8 +57,8 @@ services:
 			- MYSQL_USER=npm
 
 networks:
-	default:
-  internal:
+	proxy:
+	internal:
 
 volumes:
 	db:
