@@ -1,4 +1,9 @@
-# Welcome to How2Host
+# Welcome to How2Host.it
+
+> [!WARNING]
+> As evident by the commit history, I am barely maintaining this project. After evolving a lot as a selfhoster I'd have to rewrite everything to get it up to my current standard. For this I do not have the time. Therefor the repo has been set to deprecated, as I can no longer guarantee correctness. The domain is running out on August 18th 2025, from then on you'll only be able to read the raw markdown files.
+>
+> I'd be more than happy to accept PRs to the guides if anyone feels like it. Should a larger interest in the project develop I am also open to registering the same or a new domain.
 
 ## Idea and Motivation
 
